@@ -46,12 +46,28 @@ txt = book_title + "\n\n"
 for title, url in chapters:
     raw = common.simple_read(url)
 
-    beg = raw.index("<!--HTMLBUILERPART0-->") + 22
-    end = raw.index("</span>", beg)
+    beg = raw.find("<!--HTMLBUILERPART0-->")
+    if beg != -1:
+        beg += 22
+        end = raw.index("</span>", beg)
+
+        sio = StringIO(raw[beg:end].replace("<BR>", ""))
+    else:
+        beg = raw.find('<div id="content">')
+        if beg != -1:
+            beg += 18
+            end = raw.index("</div>", beg)
+
+            sio = StringIO(raw[beg:end].replace("<br />", "\n"))
+        else:
+            beg = raw.index('zzz="') + 5
+            beg = raw.index('"', beg) + 2
+            end = raw.index("<!", beg)
+
+            sio = StringIO(raw[beg:end].replace("<BR>", "\n"))
 
     txt += title + "\n\n"
 
-    sio = StringIO(raw[beg:end].replace("<BR>", ""))
     for line in sio:
         txt += line.strip() + '\n'
 
