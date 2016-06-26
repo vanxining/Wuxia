@@ -1,9 +1,17 @@
 
 import os
+import re
 from StringIO import StringIO
 
 import common
 common.prepare(use_proxy=False)
+
+
+pattern = re.compile(r"\<[^>]+?\>")
+
+
+def strip_tags(html):
+    return pattern.sub("", html)
 
 
 root = "http://m.gulongbbs.com"
@@ -58,13 +66,15 @@ for title, url in chapters:
             beg += 18
             end = raw.index("</div>", beg)
 
-            sio = StringIO(raw[beg:end].replace("<br />", "\n"))
+            raw = strip_tags(raw[beg:end].replace("<br />", "\n"))
+            sio = StringIO(raw)
         else:
             beg = raw.index('zzz="') + 5
             beg = raw.index('"', beg) + 2
             end = raw.index("<!", beg)
 
-            sio = StringIO(raw[beg:end].replace("<BR>", "\n"))
+            raw = strip_tags(raw[beg:end].replace("<BR>", "\n"))
+            sio = StringIO(raw)
 
     txt += title + "\n\n"
 
