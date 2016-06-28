@@ -58,23 +58,19 @@ for title, url in chapters:
     if beg != -1:
         beg += 22
         end = raw.index("</span>", beg)
-
-        sio = StringIO(raw[beg:end].replace("<BR>", ""))
     else:
         beg = raw.find('<div id="content">')
         if beg != -1:
             beg += 18
             end = raw.index("</div>", beg)
-
-            raw = strip_tags(raw[beg:end].replace("<br />", "\n"))
-            sio = StringIO(raw)
         else:
             beg = raw.index('zzz="') + 5
             beg = raw.index('"', beg) + 2
             end = raw.index("<!", beg)
 
-            raw = strip_tags(raw[beg:end].replace("<BR>", "\n"))
-            sio = StringIO(raw)
+    raw = raw[beg:end]
+    raw = raw.replace("<BR>", "\n").replace("<br />", "\n")
+    sio = StringIO(strip_tags(raw))
 
     txt += title + "\n\n"
 
