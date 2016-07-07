@@ -6,12 +6,7 @@ from StringIO import StringIO
 import common
 common.prepare(use_proxy=False)
 
-
-pattern = re.compile(r"\<[^>]+?\>")
-
-
-def strip_tags(html):
-    return pattern.sub("", html)
+from format import format
 
 
 root = "http://m.gulongbbs.com"
@@ -70,7 +65,8 @@ for title, url in chapters:
 
     raw = raw[beg:end]
     raw = raw.replace("<BR>", "\n").replace("<br />", "\n")
-    sio = StringIO(strip_tags(raw))
+    raw = format(raw.decode("gbk")).encode("gbk")
+    sio = StringIO(raw)
 
     txt += title + "\n\n"
 
